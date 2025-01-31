@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <script>
+        // Aggiungi questo per raccogliere i dati iniziali
+        let userData = {
+          name: '',
+          answers: [],
+          score: 0
+        };
+      
+        // Chiedi il nome all'avvio
+        window.onload = function() {
+          userData.name = prompt("Inserisci il tuo nome per iniziare il gioco:") || 'Anonimo';
+          document.querySelector('h1').innerHTML += `<div style="font-size:16px">Giocatore: ${userData.name}</div>`;
+        };
+      </script>
+    <head>
+        <title>Anti-Bullismo: Diventa un Eroe</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                background-color: #f0f8ff;
+            }
+            .game-container {
+                margin: 20px;
+                padding: 20px;
+                border: 2px solid #4CAF50;
+                border-radius: 10px;
+                background-color: white;
+            }
+            button {
+                padding: 10px 20px;
+                margin: 5px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            #score {
+                font-size: 24px;
+                color: #2c7da0;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="game-container">
+            <h1>🛡️ Anti-Bullismo: Diventa un Eroe! 🛡️</h1>
+            <div id="scenario"></div>
+        </div>
+
+        <script>
+            const scenarios = [
+                {
+                    situation: "📚 Un compagno prende in giro Marco per i suoi occhiali...",
+                    options: [
+                        "1. Dire con calma 'Smettila, non è divertente' e avvisare un insegnante",
+                        "2. Ridere insieme per non fare arrabbiare il bullo",
+                        "3. Insultare il bullo a tua volta"
+                    ],
+                    correct: 0,
+                },
+                {
+                    situation: "📱 Sui social, vedi commenti cattivi su una tua compagna...",
+                    options: [
+                        "1. Ignorare e scrollare avanti",
+                        "2. Mettere 'mi piace' per non essere esclusi",
+                        "3. Scrivere un commento positivo e segnalare i post cattivi"
+                    ],
+                    correct: 2,
+                },
+                {
+                    situation: "🏀 In palestra, escludono sempre Luca dal gioco...",
+                    options: [
+                        "1. Fare finta di niente per non avere problemi",
+                        "2. Urlare contro i bulli",
+                        "3. Dire 'Giochiamo tutti insieme!' e includere Luca"
+                    ],
+                    correct: 2,
+                },
+                {
+                    situation: "🍎 A mensa, rubano la merenda a Giulia...",
+                    options: [
+                        "1. Prendere la merenda per Giulia",
+                        "2. Dire 'Restituiscila!' e accompagnare Giulia da un adulto",
+                        "3. Filmare la scena con il telefono"
+                    ],
+                    correct: 1,
+                },
+                {
+                    situation: "👗 Compagne ridono di Sofia perché veste in modo diverso...",
+                    options: [
+                        "1. Unirsi alle risate per non essere presi di mira",
+                        "2. Dire 'Ognuno ha il suo stile!' e stare vicino a Sofia",
+                        "3. Sussurrare a Sofia di cambiarsi"
+                    ],
+                    correct: 1,
+                },
+                {
+                    situation: "🚌 Sul bus, qualcuno occupa sempre il posto di Leonardo...",
+                    options: [
+                        "1. Sedersi altrove per evitare problemi",
+                        "2. Spingere il bullo via dal posto",
+                        "3. Dire 'Questo è il posto di Leo' e avvisare l'autista"
+                    ],
+                    correct: 2,
+                },
+                {
+                    situation: "📝 Hanno nascosto il quaderno di matematica di Anna...",
+                    options: [
+                        "1. Aiutare Anna a cercare il quaderno",
+                        "2. Minacciare i bulli di dire tutto",
+                        "3. Cercare con Anna e avvisare la professoressa"
+                    ],
+                    correct: 2,
+                },
+                {
+                    situation: "🎭 Qualcuno imita in modo cattivo il modo di parlare di Luigi...",
+                    options: [
+                        "1. Chiedere al bullo di fare più imitazioni",
+                        "2. Dire 'Smettila, non è carino!'",
+                        "3. Prendere in giro anche altri per distrarre"
+                    ],
+                    correct: 1,
+                },
+                {
+                    situation: "🚲 Dopo scuola, un gruppo blocca il passaggio a Emma...",
+                    options: [
+                        "1. Fare finta di nulla e andare via",
+                        "2. Gridare 'Lasciatela passare!' da lontano",
+                        "3. Avvicinarsi e dire 'Dobbiamo andare' portando via Emma"
+                    ],
+                    correct: 2,
+                },
+                {
+                    situation: "🎒 Hanno scritto brutti nomi sullo zaino di Gabriele...",
+                    options: [
+                        "1. Cancellare le scritte senza dire nulla",
+                        "2. Fotografare le scritte e mostrare alla preside",
+                        "3. Ridere e dire 'È solo uno scherzo!'"
+                    ],
+                    correct: 1,
+                },
+                {
+                    situation: "👥 Un gruppo ti invita ad escludere un compagno...",
+                    options: [
+                        "1. Fare una contro-proposta inclusiva",
+                        "2. Accettare per non essere esclusi",
+                        "3. Dire 'No, non mi piace escludere le persone"
+                    ],
+                    correct: 0,
+                },
+                {
+                    situation: "💬 Senti dire falsità su un tuo amico...",
+                    options: [
+                        "1. Correggere le bugie appena possibile",
+                        "2. Chiedere 'Perché dici questo?' apertamente",
+                        "3. Diffondere la voce per vendetta"
+                    ],
+                    correct: 0,
+                }
+            ];
+
+            let currentScenario = 0;
+            let score = 0;
+
+            function startGame() {
+                showScenario();
+            }
+
+            function showScenario() {
+                const scenario = scenarios[currentScenario];
+                const scenarioDiv = document.getElementById('scenario');
+                
+                scenarioDiv.innerHTML = `
+                    <h3>Scenario ${currentScenario + 1}/${scenarios.length}</h3>
+                    <p>${scenario.situation}</p>
+                    <div id="options"></div>
+                `;
+
+                const optionsDiv = document.getElementById('options');
+                scenario.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.innerHTML = option;
+                    button.onclick = () => checkAnswer(index);
+                    optionsDiv.appendChild(button);
+                });
+            }
+
+            function checkAnswer(selected) {
+            const scenario = scenarios[currentScenario];
+            
+            // Registra la risposta
+            userData.answers.push({
+                scenario: currentScenario + 1,
+                selected: selected,
+                correct: selected === scenario.correct
+            });
+
+            if(selected === scenario.correct) {
+                score += 1;
+                userData.score = score;
+            }
+
+            currentScenario++;
+
+            if(currentScenario < scenarios.length) {
+                showScenario();
+            } else {
+                // Invia i dati a Google Sheets
+                sendDataToGoogleSheets();
+
+                const resultMessage = score > 9 ? 
+                    "🏆 Complimenti! Sai combattere il bullismo!" : 
+                    "💪 Continua a imparare! Ricorda sempre di chiedere aiuto!";
+                
+                document.getElementById('scenario').innerHTML = `
+                    <h2>Gioco Completato!</h2>
+                    <div>Punti Coraggio: ${score}/12</div>
+                    <p>${resultMessage}</p>
+                    <button onclick="location.reload()">Rigioca</button>
+                `;
+            }
+        }
+
+        function sendDataToGoogleSheets() {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzq2jmm6Bec9AHkhw50yaEyp1moIf1m7lwU5sqrUmIYMwNu4zGMF8CRKr4yOkvDASkS/exec'; // Sostituisci con il tuo URL
+            
+            const dataToSend = {
+                name: userData.name,
+                score: userData.score,
+                answers: JSON.stringify(userData.answers),
+                timestamp: new Date().toISOString()
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSend)
+            })
+            .catch(error => console.error('Error:', error));
+        }
+            startGame();
+        </script>
+    </body>
+</html>
